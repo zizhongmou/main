@@ -1,0 +1,12 @@
+{
+    "git.ignoreLimitWarning": true,
+    "files.associations": {
+        "ostream": "cpp",
+        "ranges": "cpp",
+        "variant": "cpp",
+        "bit": "cpp",
+        "iostream": "cpp",
+        "random": "cpp"
+    },
+    "C_Cpp.errorSquiggles": "enabled"
+}
