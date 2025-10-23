@@ -1,163 +1,189 @@
 #include <iostream>
-#include <cmath>
 #include <iomanip>
 using namespace std;
 
-/*
-sphere area = 4πr^2, volume = 4/3 πr^3
-cuboid area = 2 (length x width + width x height + length x height)
-cuboid volume = length x width x height
-pyramid area = area of base + 1/2 x perimeter of base x slant height
-pyramid volume = 1/3 x area of base x height
-cylinder area = 2πr^2 + 2πrh
-cylinder volume = πr^2h
-*/
-
-struct Result{
-    double area;
-    double volume;
+struct Subject{
+    string name;
+    int credit;
+    double mark;
+    char grade;
 };
 
-Result sphere(double radius, double pi = 3.14159){
-    Result result;
-    result.area = 4 * pi * pow(radius, 2);
-    result.volume = (4.0 / 3.0) * pi * pow(radius, 3);
-    return result;
+struct Student{
+    string name;
+    Subject subjects[5];
+    int age, subjectCount;
+    double cpa;
+};
+
+char calculateGrade(double mark){
+    if(mark >= 80){
+        return 'A';
+    }
+    else if(mark >= 70){
+        return 'B';
+    }
+    else if(mark >= 60){
+        return 'C';
+    }
+    else if(mark >= 50){
+        return 'D';
+    }
+    else if(mark >= 40){
+        return 'E';
+    }
+    else{
+        return 'F';
+    }
 }
 
-Result cuboid(double length, double width, double height){
-    Result result;
-    result.area = 2 * (length * width + width * height + length * height);
-    result.volume = length * width * height;
-    return result;
+double calculateCPA(Student &student){
+    double totalPoints = 0;
+    int totalCredits = 0;
+
+    for(int i = 0; i < student.subjectCount; i++){
+        int points = 0;
+
+        switch(student.subjects[i].grade){
+            case 'A':{
+                points = 4;
+                break;
+            }
+            case 'B':{
+                points = 3;
+                break;
+            }
+            case 'C':{
+                points = 2;
+                break;
+            }
+            case 'D':{
+                points = 1;
+                break;
+            }
+            default:{
+                points = 0;
+                break;
+            }
+        }
+        totalPoints += points * student.subjects[i].credit;
+        totalCredits += student.subjects[i].credit;
+    }
+    if(totalCredits == 0){ return 0; }
+    return totalPoints / totalCredits;
 }
 
-Result pyramid(double length, double width, double slant, double height){
-    Result result;
-    double baseArea = length * width;
-    double perimeter = 2 * (length + width);
-    result.area = baseArea + (1.0 / 2.0) * perimeter * slant;
-    result.volume = (1.0 / 3.0) * baseArea * height;
-    return result;
-}
-
-Result cylinder(double radius, double height, double pi = 3.14159){
-    Result result;
-    result.area = 2 * pi * pow(radius, 2) + 2 * pi * radius * height;
-    result.volume = pi * pow(radius, 2) * height;
-    return result;
-}
-
-void output(double area, double volume){
-    cout << "The area is: " << fixed << setprecision(4) << area << "cm^2" << endl;
-    cout << "The volume is: " << fixed << setprecision(4) <<volume << "cm^3" << endl;
+void displayStudentInfo(Student &student){
+    cout << "Student Name: " << student.name << endl;
+    cout << "Age: " << student.age << endl;
+    cout << "Subjects: " << endl;
+    for(int i = 0; i < student.subjectCount; i++){
+        cout << (i + 1) << ". " << student.subjects[i].name 
+        << ", Credit: " << student.subjects[i].credit 
+        << ", Mark: " << student.subjects[i].mark << ", Grade: " 
+        << student.subjects[i].grade << endl;
+    }
+    cout << "CPA: " << fixed << setprecision(2) << student.cpa << endl;
 }
 
 int main(){
-    int choice;
-    const double pi = 3.14159;
-    double length, width, height, radius, slant;
+    int studentIndex;
+    int studentCount = 0;
+    char choice;
+    Student students[10];
+
+    cout << "Enter the number of students (max 10): ";
+    cin >> studentCount;
+
+    while(studentCount <= 0 || studentCount > 10){
+        cout << "ERROR: Number of students must be between 1 to 10." << endl;
+        cout << "Enter again: ";
+        cin >> studentCount;
+    }
+
+    for(int i = 0; i < studentCount; i++){
+        cout << "Enter student " << (i + 1) << " name: ";
+        cin.ignore();
+        getline(cin, students[i].name);
+
+        cout << "Enter student " << (i + 1) << " age: ";
+        cin >> students[i].age;
+
+        students[i].subjectCount = 0;
+        students[i].cpa = 0;
+    }
+        cout << "Student info added succesfully." << endl;
 
     do{
-        cout << "----- SHAPE VOLUME & AREA CALCULATOR PROGRAM -----" << endl;
-        cout << "Pls enter a choice." << endl;
-        cout << "1. Sphere" << endl;
-        cout << "2. Cuboid" << endl;
-        cout << "3. Pyramid" << endl;
-        cout << "4. Cylinder" << endl;
-        cout << "5. Exit" << endl;
+        cout << "-----------------------------" << endl;
+        cout << "Pls enter your choice." << endl;
+        cout << "1. Add subject info" << endl;
+        cout << "2. Display student info" << endl;
+        cout << "3. Exit" << endl;
         cout << "Your choice: ";
         cin >> choice;
 
         switch(choice){
             case 1:{
-                cout << "----- SPHERE CALCULATOR-----" << endl;
-                cout << "Enter radius (in cm): ";
-                cin >> radius;
+                cout << "Enter student number (1 to " << studentCount << "): ";
+                cin >> studentIndex;
 
-                Result result = sphere(radius);
-                output(result.area, result.volume);
-                break;
+                while(studentIndex < 1 || studentIndex > studentCount){
+                    cout << "ERROR: Invalid student number. Pls enter only number 1 to "
+                    << studentCount << "." << endl;
+                    cout << "Enter again: ";
+                    cin >> studentIndex;
+                }
 
-                if(radius <= 0){
-                    cout << "ERROR: Must be a positive number." << endl;
+                Student &student = students[studentIndex - 1];
+
+                if(student.subjectCount >= 5){
+                    cout << "This student has maximum subjects." << endl;
                     break;
                 }
+
+                Subject &subject = student.subjects[student.subjectCount];
+
+                cout << "Enter subject name: ";
+                cin >> subject.name;
+
+                cout << "Enter subject credit: ";
+                cin >> subject.credit;
+
+                do{
+                    cout << "Enter subject mark: ";
+                    cin >> subject.mark;
+                } while(subject.mark < 0 || subject.mark > 100);
+
+                students[studentIndex - 1].subjects[student.subjectCount].mark = subject.mark;
+                students[studentIndex - 1].subjects[student.subjectCount].grade 
+                = calculateGrade(subject.mark);
+                student.subjectCount++;
+                student.cpa = calculateCPA(student);
+
+                cout << "Subject added succesfully." << endl;
+                break;
             }
 
             case 2:{
-                cout << "----- CUBOID CALCULATOR -----" << endl;
-                cout << "Enter length (in cm): ";
-                cin >> length;
+                do{
+                    cout << "Enter student number to display info (1 to"
+                    << studentCount << "): ";
+                    cin >> studentIndex;
 
-                cout << "Enter width (in cm): ";
-                cin >> width;
+                    if(studentIndex < 1 || studentIndex > studentCount){
+                        cout << "ERROR: Invalid student number. Pls enter only number 1 to"
+                        << studentCount << "): " << endl;
+                    }
+                    
+                }while(studentIndex < 1 || studentIndex > studentCount);
 
-                cout << "Enter height (in cm): ";
-                cin >> height;
-
-                Result result = cuboid(length, width, height);
-                output(result.area, result.volume);
+                displayStudentInfo(students[studentIndex - 1]);
                 break;
-
-                if(length <= 0 || width <= 0 || height <= 0){
-                    cout << "ERROR: Must be a positive number." << endl;
-                    break;
-                }
-            }
-
-            case 3:{
-                cout << "----- PYRAMID CALCULATOR -----" << endl;
-                cout << "Enter length (in cm): ";
-                cin >> length;
-
-                cout << "Enter width (in cm): ";
-                cin >> width;
-
-                cout << "Enter slant height (in cm): ";
-                cin >> slant;
-
-                cout << "Enter height (in cm): ";
-                cin >> height;
-
-                Result result = pyramid(length, width, slant, height);
-                output(result.area, result.volume);
-                break;
-
-                if(length <= 0 || width <= 0 || slant <= 0 || height <= 0){
-                    cout << "ERROR: Must be a positive number." << endl;
-                    break;
-                }
-            }
-
-            case 4:{
-                cout << "----- CYLINDER CALCULATOR -----" << endl;
-                cout << "Enter radius (in cm): ";
-                cin >> radius;
-
-                cout << "Enter height (in cm):";
-                cin >> height;
-
-                Result result = cylinder(radius, height);
-                output(result.area, result.volume);
-                break;
-
-                if(radius <= 0 || height <= 0){
-                    cout << "ERROR: Must be a positive number." << endl;
-                    break;
-                }
-            }
-
-            case 5:{
-                cout << "Goodbye!" << endl;
-                return 0;
-            }
-
-            default:{
-                cout << "ERROR: Please enter only number 1 to 5." << endl;
             }
         }
-    }while(choice != 5);
+
+    }while(choice != 3);
 
     return 0;
 }
