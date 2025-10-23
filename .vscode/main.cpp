@@ -176,7 +176,7 @@ int main(){
                         << studentCount << "): " << endl;
                     }
                     
-                } while(studentIndex < 1 || studentIndex > studentCount);
+                }while(studentIndex < 1 || studentIndex > studentCount);
 
                 displayStudentInfo(students[studentIndex - 1]);
                 break;
