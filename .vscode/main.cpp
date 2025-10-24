@@ -102,6 +102,7 @@ int main(){
     }
 
     for(int i = 0; i < studentCount; i++){
+        cout << "-----------------------------" << endl; 
         cout << "Enter student " << (i + 1) << " name: ";
         cin.ignore();
         getline(cin, students[i].name);
@@ -124,7 +125,7 @@ int main(){
         cin >> choice;
 
         switch(choice){
-            case 1:{
+            case '1':{
                 cout << "Enter student number (1 to " << studentCount << "): ";
                 cin >> studentIndex;
 
@@ -145,7 +146,8 @@ int main(){
                 Subject &subject = student.subjects[student.subjectCount];
 
                 cout << "Enter subject name: ";
-                cin >> subject.name;
+                cin.ignore();
+                getline(cin, subject.name);
 
                 cout << "Enter subject credit: ";
                 cin >> subject.credit;
@@ -165,14 +167,14 @@ int main(){
                 break;
             }
 
-            case 2:{
+            case '2':{
                 do{
-                    cout << "Enter student number to display info (1 to"
+                    cout << "Enter student number to display info (1 to "
                     << studentCount << "): ";
                     cin >> studentIndex;
 
                     if(studentIndex < 1 || studentIndex > studentCount){
-                        cout << "ERROR: Invalid student number. Pls enter only number 1 to"
+                        cout << "ERROR: Invalid student number. Pls enter only number 1 to "
                         << studentCount << "): " << endl;
                     }
                     
@@ -181,9 +183,19 @@ int main(){
                 displayStudentInfo(students[studentIndex - 1]);
                 break;
             }
+
+            case '3':{
+                cout << "Exiting program. Goodbye!" << endl;
+                break;
+            }
+
+            default:{
+                cout << "ERROR: Invalid choice. Pls enter only number 1 to 3." << endl;
+                break;
+            }
         }
 
-    }while(choice != 3);
+    }while(choice != '3');
 
     return 0;
 }
